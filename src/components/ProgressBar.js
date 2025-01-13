@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import slowlife from "../assets/media/slowlife.mp3";
+import pause from "../assets/images/pause.png";
+import play from "../assets/images/play-button.png";
 
 const PlayingBar = styled.div`
   width: 70%;
@@ -24,7 +26,7 @@ const Playing = styled.div`
   //   margin-top: 6rem;
   border-radius: 10px;
 `;
-const BottomSection = styled.div`
+const PlayButtonArea = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
@@ -42,7 +44,7 @@ const PlayButton = styled.div`
   //   padding: 20px;
 `;
 
-const Buttons = styled.button`
+const PlayButtons = styled.button`
   //   padding: 10px;
   margin-left: 10px;
   font-weight: 700;
@@ -51,13 +53,20 @@ const Buttons = styled.button`
   border: none;
   cursor: pointer;
 `;
-const Play = styled.div`
+const ProgressBarDiv = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
   flex-direction: row;
   align-items: center;
   //   padding: 20px;
+`;
+const PlayButtonImages = styled.img`
+  width: 25px;
+  height: 24px;
+  background-color: white;
+  border-radius: 100%;
+  padding: 10px;
 `;
 function ProgressBar({ rotate }) {
   const audio = useRef(new Audio(slowlife));
@@ -78,6 +87,7 @@ function ProgressBar({ rotate }) {
       );
     };
   }, []);
+
   const playMusic = () => {
     if (!playing) {
       audio.current.play();
@@ -94,14 +104,13 @@ function ProgressBar({ rotate }) {
     let width = progressBarRef.current.offsetWidth;
     let clickWidth = e.nativeEvent.offsetX;
     let newTime = (clickWidth / width) * audio.current.duration;
-    console.log(newTime, "newTime");
     audio.current.currentTime = newTime;
     setPlayingSeconds(newTime);
   };
   console.log(audio.current.currentTime, playingSeconds, "audio.current");
   return (
-    <BottomSection>
-      <Play>
+    <PlayButtonArea>
+      <ProgressBarDiv>
         <h6>{`${Math.floor(playingSeconds / 60)} : ${Math.floor(
           playingSeconds % 60
         )}`}</h6>
@@ -111,19 +120,15 @@ function ProgressBar({ rotate }) {
           ></Playing>
         </PlayingBar>
         <h6>{`${audioMetaData.minutes} : ${audioMetaData.seconds}`}</h6>
-      </Play>
+      </ProgressBarDiv>
       <PlayButton>
-        <Buttons>prev</Buttons>
-        <Buttons
-          onClick={() => {
-            playMusic();
-          }}
-        >
-          play
-        </Buttons>
-        <Buttons>next</Buttons>
+        {/* <PlayButtons>prev</PlayButtons> */}
+        <PlayButtons onClick={playMusic}>
+          <PlayButtonImages src={playing ? pause : play} />
+        </PlayButtons>
+        {/* <PlayButtons>next</PlayButtons> */}
       </PlayButton>
-    </BottomSection>
+    </PlayButtonArea>
   );
 }
 
